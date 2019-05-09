@@ -3,40 +3,30 @@ import React from 'react';
 import './App.css';
 
 
-class Tablehead extends React.Component{
- 
-  render(){
-      return(
-          <h>sno    name            time     done    delete</h>
-      );
-  }
-}
 
-class Task extends React.Component{  
- 
-  render(){
-      return(
-          <li>
-          <div>
-          <h>{this.props.sno+1} { this.props.name}</h>
-              <h>{this.props.done?"yes":"no"}</h>
-              <button onClick = {this.props.removeTask(this.props.sno)}>delete</button>
-          </div>
-             
-          </li>
-      );
-  }
-}
 class TaskList extends React.Component{
   constructor(props){
       super(props);
-      this.removeTask = this.props.removeTask.bind(this);
   }
   
   render(){
-      return (<ul>{ this.props.tasks.map((task,index)=>
-          <Task key={index} sno = {index} name = {task.name} deadline = {task.deadline} done = {task.done} removeTask = {this.removeTask}/>
-      )}</ul>);
+      return (
+        <div> 
+        sno   name    deadline    done
+        <ul>
+          {
+           this.props.tasks.map((task,index)=>
+             <li>
+              <div>
+                {index+1} { task.name}  { task.deadline}{task.done?" yes ":" no "}
+                <button onClick = {()=>this.props.removeTask(index)}>delete</button>
+              </div>        
+            </li>
+            )
+          }
+        </ul>
+        </div>
+      );
   }
   
 }
@@ -46,17 +36,7 @@ class Board extends React.Component {
       this.state ={
             name:'',
             deadline : new Date().toLocaleDateString(),
-          tasks : [
-            {
-            name :"abcc",
-            deadline: new Date().toLocaleDateString(),
-            done : false
-          },{
-            name :"cc",
-            deadline: new Date().toLocaleDateString(),
-            done : true
-          }
-        ]
+          tasks : [ ]
       };    
       this.nameChange = this.nameChange.bind(this);
       this.dateChange = this.dateChange.bind(this);
@@ -64,7 +44,7 @@ class Board extends React.Component {
       this.removeTask = this.removeTask.bind(this);
   }  
   dateChange(event){
-    let tst = {date : event.target.value.toLocaleDateString()};
+    let tst = {deadline : event.target.value};
     this.setState(state=>(tst));
     event.preventDefault();
   }
@@ -81,6 +61,7 @@ class Board extends React.Component {
             done: false
           })
       }))
+      
       event.preventDefault();
   }
   removeTask(index){
@@ -95,8 +76,8 @@ class Board extends React.Component {
           <header className = "Board-header">ToDo</header>
           <input type="text" value= {this.state.name} onChange = {this.nameChange}></input>
           <input type="date" value= {this.state.deadline} onChange= {this.dateChange}></input>
-          <button value = "addtask" onClick = {this.addTask}></button>
-          <Tablehead />
+          <button value = "addtask" onClick = {this.addTask}>add</button>
+       
          
           <TaskList tasks = {this.state.tasks} removeTask = {this.removeTask}/>
       </div>
